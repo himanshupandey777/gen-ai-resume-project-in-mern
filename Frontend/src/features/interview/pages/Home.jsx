@@ -7,6 +7,7 @@ const Home = () => {
   const {loading, generateReport, getAllReports, reports} = useInterview()
   const [jobDescription, setJobDescription] = useState("")
   const [selfDescription, setSelfDescription] = useState("")
+  const [fileName, setFileName] = useState("")
   const resumeInputRef = useRef()
   const navigate = useNavigate()
 
@@ -71,10 +72,11 @@ const Home = () => {
                 </div>
                 <label className="upload-area" htmlFor="resume">
                   <span className="upload-icon" aria-hidden="true">⇧</span>
-                  <span className="upload-title">Click to upload or drag &amp; drop</span>
-                  <span className="upload-hint">PDF or DOCX (Max 5MB)</span>
+                  <span className="upload-title">{fileName ? fileName : "Click to upload or drag & drop"}</span>
+                  <span className="upload-hint">{fileName ? "File selected. Click to change." : "PDF only (Max 3MB)"}</span>
                 </label>
-                <input ref= {resumeInputRef} className="visually-hidden" hidden type="file" name="resume" id="resume" accept=".pdf,.docx" />
+                <input ref={resumeInputRef} className="visually-hidden" hidden type="file" name="resume" id="resume" accept=".pdf"
+                  onChange={(e) => setFileName(e.target.files[0]?.name || "")} />
               </div>
 
               <div className="or-divider"><span>OR</span></div>
