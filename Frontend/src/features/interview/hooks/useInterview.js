@@ -53,25 +53,27 @@ export const useInterview = () => {
     }
 
     const getresumePdf = async (interviewReportId) => {
-        setPdfLoading(true)
-        try {
-            const response = await generateResumePdf(interviewReportId)
-            const url = window.URL.createObjectURL(
-                new Blob([response], { type: "application/pdf" })
-            )
-            const link = document.createElement("a")
-            link.href = url
-            link.setAttribute("download", `resume_${interviewReportId}.pdf`)
-            document.body.appendChild(link)
-            link.click()
-            link.remove()
-            window.URL.revokeObjectURL(url)
-        } catch (error) {
-            console.error("Error generating resume PDF:", error)
-        } finally {
-            setPdfLoading(false)
-        }
+    setPdfLoading(true)
+    try {
+        const response = await generateResumePdf(interviewReportId)
+        const url = window.URL.createObjectURL(
+            new Blob([response], { type: "application/pdf" })
+        )
+        const link = document.createElement("a")
+        link.href = url
+        link.download = `resume_${interviewReportId}.pdf`
+        link.target = "_blank"
+        link.rel = "noopener"
+        document.body.appendChild(link)
+        link.click()
+        link.remove()
+        setTimeout(() => window.URL.revokeObjectURL(url), 60000)
+    } catch (error) {
+        console.error("Error generating resume PDF:", error)
+    } finally {
+        setPdfLoading(false)
     }
+}
 
     return { loading, pdfLoading, report, reports, generateReport, getReportById, getAllReports, getresumePdf }
 }
