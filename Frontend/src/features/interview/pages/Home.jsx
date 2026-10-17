@@ -2,6 +2,7 @@ import "../style/home.scss"
 import React,{useState, useRef, useEffect} from "react"
 import {useInterview} from "../hooks/useInterview"
 import {useNavigate, Link} from "react-router"
+import { useAuth } from "../../auth/hooks/useAuth"
 
 const Home = () => {
   const {loading, generateReport, getAllReports, reports} = useInterview()
@@ -24,6 +25,15 @@ const Home = () => {
         alert("Failed to generate report. Please try again.")
     }
   }
+    const { handleLogout } = useAuth()
+
+    const onLogoutClick = async () => {
+        try {
+            await handleLogout()
+        } catch (err) {
+            console.log("Logout failed", err)
+        }
+    } 
   if(loading){
     return (
       <main className="loading-screen">
@@ -40,7 +50,7 @@ const Home = () => {
           <h1>Create Your Custom <span>Interview Plan</span></h1>
           <p>Let our AI analyze the job requirements and your unique profile to<br className="desktop-break" /> build a winning strategy.</p>
         </header>
-
+        <button className='button logout-btn primary-button' onClick={onLogoutClick}>Logout</button>
         <form className="interview-form">
           <div className="form-columns">
             <section className="job-section" aria-labelledby="job-heading">
@@ -56,7 +66,7 @@ const Home = () => {
                   maxLength={5000}
                   placeholder={'Paste the full job description here...\ne.g. “Senior Frontend Engineer at Google requires proficiency in React, TypeScript, and large-scale system design...”'}
                 />
-                <span className="character-count">0 / 5000 chars</span>
+               
               </div>
             </section>
 
@@ -68,7 +78,7 @@ const Home = () => {
               <div className="resume-field">
                 <div className="field-label-row">
                   <label htmlFor="resume">Upload Resume</label>
-                  <span className="tag">Best Results</span>
+                  <span className="tag">Required</span>
                 </div>
                 <label className="upload-area" htmlFor="resume">
                   <span className="upload-icon" aria-hidden="true">⇧</span>
@@ -88,13 +98,13 @@ const Home = () => {
                   id="selfDescription"
                   name="self-description"
                   maxLength={1000}
-                  placeholder="Briefly describe your experience, key skills, and years of experience if you don't have a resume handy..."
+                  placeholder="Briefly describe your experience, key skills, and years of experience"
                 />
               </div>
 
               <div className="form-notice" role="note">
                 <span className="notice-icon" aria-hidden="true">i</span>
-                <p>Either a <strong>Resume</strong> or a <strong>Self Description</strong> is required to generate a personalized plan.</p>
+                <p> <strong>Resume</strong> and <strong>Self Description</strong> are required to generate a personalized plan.</p>
               </div>
             </section>
           </div>
@@ -107,7 +117,7 @@ const Home = () => {
           </div>
         </form>
 
-        {/* recent report list */}
+
         {reports.length > 0 && (
           <section className="recent-reports">
             <h2>My Recent Interview Plans</h2>

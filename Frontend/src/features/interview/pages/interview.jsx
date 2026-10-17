@@ -2,6 +2,7 @@ import "../style/interview.scss"
 import { useEffect } from "react"
 import { useParams } from "react-router"
 import { useInterview } from "../hooks/useInterview"
+import { useAuth } from "../../auth/hooks/useAuth"
 
 
 const QuestionList = ({ title, questions, id, numberOffset = 0 }) => (
@@ -53,10 +54,19 @@ function getMatchTier(score) {
 const Interview = () => {
     const { interviewId } = useParams()
     const { report, loading, pdfLoading, getReportById, getresumePdf } = useInterview()
+    const { handleLogout } = useAuth()
 
     useEffect(() => {
       getReportById(interviewId)
     }, [interviewId])
+
+    const onLogoutClick = async () => {
+      try {
+        await handleLogout()
+      } catch (err) {
+        console.log("Logout failed", err)
+      }
+    }
 
     if (loading || !report) {
       return (
@@ -98,7 +108,15 @@ const Interview = () => {
             <h1>Your interview strategy</h1>
             <p>A focused plan to help you walk into your next interview prepared.</p>
           </div>
+          
           <a className="back-link" href="/">← <span>New plan</span></a>
+          <button
+            type="button"
+            className='button logout-btn primary-button'
+            onClick={onLogoutClick}
+          >
+            Logout
+          </button>
         </header>
 
         <div className="report-content">

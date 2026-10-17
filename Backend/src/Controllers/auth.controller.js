@@ -99,16 +99,22 @@ async function loginUserController(req,res){
  * @access public
  */
 
-async function logoutUserController(req,res){
-    const token =req.cookies.token
-    if(token){
-        await tokenBlacklistModel.create({token})
-    }
-    
-    const { maxAge, ...clearOptions } = cookieOptions
-res.clearCookie("token", clearOptions)
-}
+async function logoutUserController(req, res) {
+    try {
+        const token = req.cookies.token
+        if (token) {
+            await tokenBlacklistModel.create({ token })
+        }
 
+        const { maxAge, ...clearOptions } = cookieOptions
+        res.clearCookie("token", clearOptions)
+
+        res.status(200).json({ message: "User logged out successfully" })
+    } catch (err) {
+        console.error(err)
+        res.status(500).json({ message: "Logout failed" })
+    }
+}
 
 /**
  * @name getMeController
